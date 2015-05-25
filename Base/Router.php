@@ -4,7 +4,7 @@ namespace Base;
 
 class Router
 {
-    static function getController()
+    public static function getController()
     {
         if(isset($_GET['r']))
         {
@@ -12,7 +12,7 @@ class Router
             if(isset($get_arr[1]))
                 return ucfirst($get_arr[1]);
             else
-                throw new \Exception("Error 404. Sorry. This page doees not exist.");
+                throw new \Exception("Error 404. Sorry. This page doees not exists.");
         }
         else
             return 'Index';

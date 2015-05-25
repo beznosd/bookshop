@@ -34,8 +34,9 @@ class NamespaceAutoloader
                     return true;
                 }
                 else
-                    throw new \Exception("Error 404. Sorry. This page doees not exist.");
+                    throw new \Exception("Error 404. Sorry. This page doees not exists.");
             }
+            //else throw new Exception('"'. $namespace . '" hasn\'t been found');
         }
 
         return false;
