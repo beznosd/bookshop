@@ -1,82 +1,19 @@
-<div id="main" class="container">
-	<div class="col-lg-3">
-		<nav>
-			<ul>
-				<li><a href="http://localhost/bookshop/?r=site/category">Категория</a></li>
-				<li><a href="#">Категория</a></li>
-				<li><a href="#">Категория</a></li>
-				<li><a href="#">Категория</a></li>
-			</ul>
-		</nav>
-	</div>
-	<div id="books_container" class="col-lg-9">
-		<div class="row">
-			<div class="col-lg-3">
-				<a href="">
-					<img src="images/book1.png" />
-				</a>
-				<br/><br/>
-				<p>Мини описание</p>
-				<p><a href="#">В корзину</a></p>
+<div id="books_container" class="col-lg-9">
+	<?php $books_count = count($books); ?>
+	<?php for ($i = 0; $i < $books_count; $i++): ?>
+		<?php if ( $books_count > 4): ?>
+			<div class="row">
+		<?php endif; ?>
+				<div class="col-lg-3">
+					<a href="">
+						<img src="images/books/<?=$books[$i]['cover']?>" />
+					</a>
+					<br/><br/>
+					<p><?=$books[$i]['title']?></p>
+					<p><a class="ajax_link" href="<?=SITE_URL.'&action=to_cart&id_book='.$books[$i]['id_book']?>">В корзину</a></p>
+				</div>
+		<?php if ( $books_count > 4): ?>
 			</div>
-			<div class="col-lg-3">
-				<a href="">
-					<img src="images/book1.png" />
-				</a>
-				<br/><br/>
-				<p>Мини описание</p>
-				<p><a href="#">В корзину</a></p>
-			</div>
-			<div class="col-lg-3">
-				<a href="">
-					<img src="images/book1.png" />
-				</a>
-				<br/><br/>
-				<p>Мини описание</p>
-				<p><a href="#">В корзину</a></p>
-			</div>
-			<div class="col-lg-3">
-				<a href="">
-					<img src="images/book1.png" />
-				</a>
-				<br/><br/>
-				<p>Мини описание</p>
-				<p><a href="#">В корзину</a></p>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-lg-3">
-				<a href="">
-					<img src="images/book1.png" />
-				</a>
-				<br/><br/>
-				<p>Мини описание</p>
-				<p><a href="#">В корзину</a></p>
-			</div>
-			<div class="col-lg-3">
-				<a href="">
-					<img src="images/book1.png" />
-				</a>
-				<br/><br/>
-				<p>Мини описание</p>
-				<p><a href="#">В корзину</a></p>
-			</div>
-			<div class="col-lg-3">
-				<a href="">
-					<img src="images/book1.png" />
-				</a>
-				<br/><br/>
-				<p>Мини описание</p>
-				<p><a href="#">В корзину</a></p>
-			</div>
-			<div class="col-lg-3">
-				<a href="">
-					<img src="images/book1.png" />
-				</a>
-				<br/><br/>
-				<p>Мини описание</p>
-				<p><a href="#">В корзину</a></p>
-			</div>
-		</div>
-	</div>
+		<?php endif; ?>
+	<?php endfor; ?>
 </div>

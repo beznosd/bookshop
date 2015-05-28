@@ -6,13 +6,15 @@ class MySQLi_Query
 {
 	//выборка, тут всё ясно
 
-	public function select($link, $query)
+	public static function select($link, $query, $type = 'array')
 	{
 		$result = mysqli_query($link, $query) or die(mysqli_error($link));
 		$arr = [];
 
-		while ($row = mysqli_fetch_array($result)) 
-			$arr[] = $row;
+		$mysqli_fetch_type = 'mysqli_fetch_' . $type;
+
+		while ($row = $mysqli_fetch_type($result)) 
+					$arr[] = $row;
 
 		return $arr;
 	}
@@ -24,7 +26,7 @@ class MySQLi_Query
 	// результат	- идентификатор новой строки
 	//
 
-	public function insert($link, $table, $object)
+	public static function insert($link, $table, $object)
 	{
 		$columns = [];
 		$values = [];
@@ -45,10 +47,12 @@ class MySQLi_Query
 		$columns_s = implode(',', $columns);
 		$values_s = implode(',', $values);
 
+		//return [$columns_s, $values_s];
+
 		$query = "INSERT INTO $table ($columns_s) VALUES ($values_s)";
 		$result = mysqli_query($link, $query) or die(mysqli_error($link));
 
-		return mysqli_insert_id();
+		return mysqli_insert_id($link);
 	}
 
 	//
@@ -59,7 +63,7 @@ class MySQLi_Query
 	// результат	- число измененных строк
 	//	
 
-	public function update($link, $table, $object, $where)
+	public static function update($link, $table, $object, $where)
 	{
 		$sets = [];
 
@@ -88,7 +92,7 @@ class MySQLi_Query
 	// результат	- число удаленных строк
 	//		
 
-	public function delete($link, $table, $where)
+	public static function delete($link, $table, $where)
 	{
 		$query = "DELETE FROM $table WHERE $where";
 		$result = mysqli_query($link, $query) or die(mysqli_error($link));

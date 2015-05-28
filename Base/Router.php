@@ -14,7 +14,9 @@ class Router
             else
                 throw new \Exception("Error 404. Sorry. This page doees not exists.");
         }
-        else
-            return 'Index';
+        else{
+            header("Location:".SITE_URL."?r=site/index");
+            die();
+        }
     }
 }

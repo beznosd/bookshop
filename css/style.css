@@ -17,3 +17,20 @@
 #books_container .row{
 	margin-bottom: 25px;
 }
+
+a.navbar-right{
+	margin-top: 8px;
+	/*color: #777;*/
+}
+
+a.navbar-right :first-child{
+	font-size: 125%;
+}
+
+a.navbar-right:hover{
+	text-decoration: none;
+}
+
+.glyphicon-shopping-cart{
+	font-size: 180%;
+}
