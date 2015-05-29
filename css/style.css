@@ -18,16 +18,24 @@
 	margin-bottom: 25px;
 }
 
-a.navbar-right{
+/*Header*/
+
+div.navbar-right{
 	margin-top: 8px;
+}
+
+a#top_cart_num{
+	display: block;
+	margin-left: 10px;
+	/*margin-top: 8px;*/
 	/*color: #777;*/
 }
 
-a.navbar-right :first-child{
+a#top_cart_num :first-child{
 	font-size: 125%;
 }
 
-a.navbar-right:hover{
+a#top_cart_num:hover{
 	text-decoration: none;
 }
 

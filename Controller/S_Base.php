@@ -29,6 +29,8 @@ class S_Base extends S_Controller
 		//handling the ajax
 		if ( isset($_GET['action']) ) {
 			new \Model\AjaxHandler($_GET['action'], $this->db_link);
+		} else if ( $_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
+			new \Model\AjaxHandler($_POST['action'], $this->db_link);
 		}
 	}
 

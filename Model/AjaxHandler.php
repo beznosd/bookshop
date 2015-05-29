@@ -13,9 +13,13 @@ class AjaxHandler
 
 		$action = \Model\Functions::clearData($action);
 		if ( $action != '' ) {
+			$this->output['action'] = $action;
 			switch ($action) {
 				case 'to_cart':
 					$this->add_to_cart($action);
+					break;
+				case 'registration_form':
+					$this->registration($action);
 					break;
 				default:
 					echo "No such action";
@@ -28,7 +32,6 @@ class AjaxHandler
 
 	private function add_to_cart($action)
 	{
-		$this->output['action'] = $action;
 		$id_book = mysqli_real_escape_string( $this->db_link, \Model\Functions::clearData($_GET['id_book']) );
 		if ( $id_book ) {
 			$book = \Model\MySQLi_Query::select($this->db_link, 
@@ -60,5 +63,46 @@ class AjaxHandler
 		}
 
 		echo json_encode($this->output);
+	}
+
+	private function registration($action)
+	{
+		$name = \Model\Functions::clearData($_POST['name']);
+		$surname = \Model\Functions::clearData($_POST['surname']);
+		$email = \Model\Functions::clearData($_POST['email']);
+		$password1 = \Model\Functions::clearData($_POST['password1']);
+		$password2 = \Model\Functions::clearData($_POST['password2']);
+
+		if ( !empty($name) && !empty($surname) && !empty($email) && !empty($password1) && !empty($password2) ) {
+			if ( filter_var($email, FILTER_VALIDATE_EMAIL) ) {
+				if ( $password1 === $password2) {
+					$user_count = \Model\MySQLi_Query::select($this->db_link, 
+					'SELECT COUNT(*) FROM customers WHERE email = \''.$email.'\'', 'array');
+					if ( $user_count[0][0] == 0) {
+						//code to insert data to database
+						$this->output['success'] = true;
+					}
+					else {
+						$this->output['error'] = 'Пользователь с таким email уже существует.';
+						$this->output['success'] = false;
+					}
+				} else {
+					$this->output['error'] = 'Пароли не совпадают. Введите еще раз.';
+					$this->output['success'] = false;
+				}
+			}
+			else {
+				$this->output['error'] = 'Введите корректный email.';
+				$this->output['success'] = false;
+			}
+		}
+		else{
+			$this->output['error'] = 'Заполните пожалуйста все поля.';
+			$this->output['success'] = false;
+		}
+		//$this->output['success'] = true;
+		echo json_encode($this->output);
+
+		
 	}
 }
