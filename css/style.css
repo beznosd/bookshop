@@ -42,3 +42,9 @@ a#top_cart_num:hover{
 .glyphicon-shopping-cart{
 	font-size: 180%;
 }
+
+/*Modal windows*/
+
+.alert{
+	display: none;
+}

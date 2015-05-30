@@ -1,0 +1,2 @@
+1. Validation forms on client
+2. Make away with md5() for passwords
