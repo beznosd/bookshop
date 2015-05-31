@@ -24,6 +24,9 @@ class AjaxHandler
 				case 'authorization_form':
 					$this->authorization();
 					break;
+				case 'exit':
+					$this->logout();
+					break;
 				default:
 					echo "No such action";
 					break;
@@ -130,8 +133,48 @@ class AjaxHandler
 
 	private function authorization()
 	{
+		$email = \Model\Functions::clearData($_POST['email']);
+		$pass = \Model\Functions::clearData($_POST['password']);
+
+		if( !empty($email) && !empty($pass) && filter_var($email, FILTER_VALIDATE_EMAIL) ) {
+			$email_bd = \Model\MySQLi_Query::select($this->db_link, 'SELECT email FROM customers WHERE email = \''.$email.'\'', 'assoc');
+			$pass_bd = \Model\MySQLi_Query::select($this->db_link, 'SELECT pass FROM customers	 WHERE email = \''.$email.'\'', 'assoc');
+			
+			$pass = md5(md5($pass).'22');
+
+			if ( !empty($email_bd) && !empty($pass_bd) && ($email_bd[0]['email'] === $email) && ($pass === $pass_bd[0]['pass']) ) {
+				$customer = \Model\Customer::Instance($this->db_link);
+				if( $customer->setSession($email) ) {
+					$this->output['success'] = true;
+					$this->output['msg'] = SITE_URL;
+				}
+				else {
+					$this->output['err']['err_num'][] = 1;
+					$this->output['err']['err_text'][] = 'Неполучилось установить для вас сессию';
+					$this->output['success'] = false;
+				}
+			} else {
+				$this->output['err']['err_num'][] = 0;
+				$this->output['err']['err_text'][] = 'Неправильный логин или пароль. Попоробуйте еще раз.';
+				$this->output['success'] = false;
+			}
+		}
+		else {
+			$this->output['err']['err_num'][] = 0;
+			$this->output['err']['err_text'][] = 'Неправильный логин или пароль. Попоробуйте еще раз.';
+			$this->output['success'] = false;
+		}
+
+		echo json_encode($this->output);
+	}
+
+	function logout()
+	{
+		$customer = \Model\Customer::Instance($this->db_link);
+		$customer->deleteSession();
 		$this->output['success'] = true;
-		$this->output['yes'] = 'yes';
+		$this->output['msg'] = SITE_URL;
+
 		echo json_encode($this->output);
 	}
 }

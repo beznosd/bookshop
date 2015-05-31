@@ -3,7 +3,7 @@ session_start();
 
 require_once __DIR__.'/Base/NamespaceAutoloader.php';
 define('ROOT_DIR', dirname(__FILE__));
-define('SITE_URL', "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
+define('SITE_URL', 'http://localhost/bookshop/?r=site/index');
 define('SID', session_id());
 
 $autoloader = new \Base\NamespaceAutoloader();

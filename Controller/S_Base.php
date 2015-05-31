@@ -14,12 +14,17 @@ class S_Base extends S_Controller
 	//for main template
 	public $categories;
 	public $cart_count;
+	public $customer;
 
 	public function onInput()
 	{
 		\Model\DB_Connection::DBConnect();
 		//$this->db_work = new \Model\MySQLi_Query();
 		$this->db_link = \Model\DB_Connection::$link;
+
+		//define customer and permissions
+		/*$customer = \Model\Customer::Instance($this->db_link);*/
+		$this->customer = \Model\Customer::Instance($this->db_link)->getCustomer();
 
 		//get the categories
 		$this->categories = \Model\MySQLi_Query::select($this->db_link, 'SELECT DISTINCT category FROM books', 'assoc');
@@ -38,7 +43,8 @@ class S_Base extends S_Controller
 	{
 		$page = $this->Template('View/layouts/main_layout.php', ['content' => $this->content, 
 																'categories' => $this->categories,
-																'cart_count' => $this->cart_count[0][0]
+																'cart_count' => $this->cart_count[0][0],
+																'customer' => $this->customer[0]
 																]);
 		echo $page;
 	}

@@ -82,7 +82,7 @@ class MySQLi_Query
 		$query = "UPDATE $table SET $set_s WHERE $where";
 		$result = mysqli_query($link, $query) or die(mysqli_error($link));
 
-		return mysqli_affected_rows($result);
+		return mysqli_affected_rows($link);
 	}
 
 	//
@@ -97,6 +97,6 @@ class MySQLi_Query
 		$query = "DELETE FROM $table WHERE $where";
 		$result = mysqli_query($link, $query) or die(mysqli_error($link));
 
-		return mysqli_affected_rows($result);
+		return mysqli_affected_rows($link);
 	}
 }

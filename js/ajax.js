@@ -8,10 +8,14 @@ $(document).ready(function(){
 				url: $(this).attr('href'),
 				success: function(data){
 					data = $.parseJSON(data);
+					/*alert(data);*/
 					if ( data.success ) {
 						switch( data.action ) {
 							case 'to_cart':
 								$('#cart_count_top').text(data.cart_count);
+								break;
+							case 'exit':
+								window.location.replace(data.msg);
 								break;
 						}
 					}
@@ -80,10 +84,28 @@ $(document).ready(function(){
 						break;
 						case 'authorization_form':
 							if ( data.success ) {
-								alert(data.yes);
+								window.location.replace(data.msg);
+								/*$('.alert-success.alert-authorization').text(data.msg).stop().fadeIn(500);
+								document.getElementById('authorization_form').reset();
+								setTimeout(function(){
+									$('#modal-auth').modal('hide');
+									$('.alert-success.alert-authorization').fadeOut(500);
+								}, 2250);*/
 							}
 							else if( !data.success ) {
-								alert('Error');
+								for (var i = 0; i < data.err.err_num.length; i++) {
+									if (i == 0)
+										$('.alert-danger.alert-authorization').text(data.err.err_text[i]).stop().fadeIn(500);
+									if (i != 0 && data.err.err_num.length > 1 && data.err.err_num[i] != data.err.err_num[i-1]){
+										$('.alert-danger.alert-authorization').clone().appendTo('.alerts').text(data.err.err_text[i]).stop().animate({opacity:1},500).addClass('clone');
+									}
+									setTimeout(function(){
+										$('.alert-danger.alert-authorization').fadeOut(500);
+									}, 3000);
+									setTimeout(function(){
+										$('.clone').remove();
+									}, 3500);
+								}
 							} else {
 								alert('При ajax запросе произошла ошибка на сервере');
 							}

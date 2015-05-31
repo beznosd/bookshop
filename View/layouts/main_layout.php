@@ -19,8 +19,13 @@
 		<div class="container">
 			<a class="navbar-brand" href="#">Книжный магазин</a>
 			<div class="navbar-right">
+				<?php if( empty($customer) || !isset($customer) ): ?>
 				<button class="btn btn-success btn-sm" data-toggle="modal" data-target="#modal-auth">Вход</button>
 				<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-reg">Регистрация</button>
+				<?php else: ?>
+					<a class="btn btn-success btn-sm"><i class="glyphicon glyphicon-user"></i>&nbsp;&nbsp;&nbsp;<?=$customer['name'] . ' ' . $customer['surname']?></a>
+					<a href="<?=SITE_URL.'&action=exit'?>" class="btn btn-primary btn-sm ajax_link">Выйти</a>
+				<?php endif; ?>
 				<a class="pull-right" id="top_cart_num" href="#">
 					<?php if ($cart_count == 0) $cart_count = '';?>
 					<span id="cart_count_top"><?=$cart_count?></span>
@@ -59,9 +64,9 @@
                 </div>
                 <div class="modal-body">
                 	<div class="alerts">
-                		<div class="alert alert-success alert-registration" role="alert"></div>
-	                	<div class="alert alert-warning alert-registration" role="alert"></div>
-	                	<div class="alert alert-danger alert-registration" role="alert"></div>
+                		<div class="alert alert-success alert-authorization" role="alert"></div>
+	                	<div class="alert alert-warning alert-authorization" role="alert"></div>
+	                	<div class="alert alert-danger alert-authorization" role="alert"></div>
                 	</div>
                     <form id="authorization_form" method="POST" action="javascript:void(0);">
 	                    <div class="form-group">
@@ -75,7 +80,7 @@
 	                    	<label for="auth_pass_input">Введите новый пароль</label>
 	                    	<div class="input-group">
 								<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>                		
-		                    	<input type="password" class="form-control" id="auth_pass_input" name="password1" placeholder="Ваш пароль">
+		                    	<input type="password" class="form-control" id="auth_pass_input" name="password" placeholder="Ваш пароль">
 	                    	</div>
 	                    </div>
                     </form>
