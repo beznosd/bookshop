@@ -1,4 +1,8 @@
 $(document).ready(function(){
+	/*
+	* Ajax for links and buttons, for forms only POST queries
+	*/
+
 	$(".ajax_link").click(function(){
 		//alert($(this).attr('href'));
 		var request_type = ( $(this).attr('request-type') ) ? $(this).attr('request-type').toUpperCase() : 'GET';
@@ -16,6 +20,18 @@ $(document).ready(function(){
 								break;
 							case 'exit':
 								window.location.replace(data.msg);
+								break;
+							case 'drop_cart':
+								//alert(data.id_book);
+								$('#' + data.id_book + '_book_row').fadeOut(500);
+								if (!data.cart_count){
+									data.cart_count = 0;
+									$('#cart_count_top').text('');
+								}else {
+									$('#cart_count_top').text(data.cart_count);
+								}
+								$('#cart_count_side').text(data.cart_count);
+								$('#cart_summ_side').text(data.items_summ);
 								break;
 						}
 					}
@@ -118,5 +134,42 @@ $(document).ready(function(){
 			});
 		}
 		return false;
+	});
+
+	/*
+	* Ajax for item_count on the cart_page
+	*/
+
+	$('.item_count').blur(function(){
+		var form = $(this).attr('form');
+		var id = parseInt($(this).attr('id'));
+		var value = $(this).val();
+		if(value > 0) {
+			var data_to_send = 'id=' + id + '&value=' + value + '&action='+form;
+			//alert(data_to_send);
+			$.ajax({
+				method: 'POST',
+				url: 'http://localhost/bookshop/?r=site/index',
+				data: data_to_send,
+				success: function(data){
+					data = $.parseJSON(data);
+					/*alert(data);*/
+					if ( data.success ) {
+						$('#cart_count_top').text(data.cart_count);
+						$('#cart_count_side').text(data.cart_count);
+						$('#cart_summ_side').text(data.items_summ);
+					}
+					else {
+						alert(data.err);
+					}
+				},
+				error: function(){
+					alert('Lost connection with the server!');
+				}
+			});
+		}
+		else {
+			alert('Передданное значение некорректно');
+		}
 	});
 });

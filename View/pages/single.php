@@ -9,14 +9,14 @@
 	</nav>
 </div>
 
-<div id="books_container" class="col-lg-9">
+<!-- <div id="books_container" class="col-lg-9">
 	<?php $books_count = count($books); ?>
 	<?php for ($i = 0; $i < $books_count; $i++): ?>
 		<?php if ( $books_count > 4): ?>
 			<div class="row">
 		<?php endif; ?>
 				<div class="col-lg-3">
-					<a href="<?='http://localhost/bookshop/?r=site/single'.'&id_book='.$books[$i]['id_book']?>">
+					<a href="<?=SITE_URL.'&id_book='.$books[$i]['id_book']?>">
 						<img src="images/books/<?=$books[$i]['cover']?>" />
 					</a>
 					<br/><br/>
@@ -27,4 +27,4 @@
 			</div>
 		<?php endif; ?>
 	<?php endfor; ?>
-</div>
+</div> -->

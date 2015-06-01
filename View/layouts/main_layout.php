@@ -17,7 +17,7 @@
 <body>
 	<header class="navbar navbar-default navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="#">Книжный магазин</a>
+			<a class="navbar-brand" href="<?=SITE_URL?>">Книжный магазин</a>
 			<div class="navbar-right">
 				<?php if( empty($customer) || !isset($customer) ): ?>
 				<button class="btn btn-success btn-sm" data-toggle="modal" data-target="#modal-auth">Вход</button>
@@ -26,7 +26,7 @@
 					<a class="btn btn-success btn-sm"><i class="glyphicon glyphicon-user"></i>&nbsp;&nbsp;&nbsp;<?=$customer['name'] . ' ' . $customer['surname']?></a>
 					<a href="<?=SITE_URL.'&action=exit'?>" class="btn btn-primary btn-sm ajax_link">Выйти</a>
 				<?php endif; ?>
-				<a class="pull-right" id="top_cart_num" href="#">
+				<a href="http://localhost/bookshop/?r=site/cart" class="pull-right" id="top_cart_num" href="#">
 					<?php if ($cart_count == 0) $cart_count = '';?>
 					<span id="cart_count_top"><?=$cart_count?></span>
 					<span class="glyphicon glyphicon-shopping-cart"></span>
@@ -35,7 +35,7 @@
 		</div>
 	</header>
 	<div id="main" class="container">
-		<div class="col-lg-3">
+		<!-- <div class="col-lg-3">
 			<nav>
 				<ul>
 					<?php $cat_count = count($categories); ?>
@@ -44,7 +44,7 @@
 					<?php endfor; ?>
 				</ul>
 			</nav>
-		</div>
+		</div> -->
 
 		<?=$content ?>
 

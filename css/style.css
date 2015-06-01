@@ -1,3 +1,11 @@
+a:active, a:focus{
+    outline: none !important;
+}
+
+.btn:focus, .btn:active:focus, .btn.active:focus, .btn.focus, .btn.focus:active, .btn.active.focus {
+    outline: none !important;
+}
+
 #main{
 	margin-top: 80px;
 }
@@ -47,4 +55,32 @@ a#top_cart_num:hover{
 
 .alert{
 	display: none;
+}
+
+/*Cart*/
+
+#cart_container .row {
+	margin-bottom: 20px;
+}
+
+#cart_container .page-header, #cart_container .page-header h3{
+	margin-top: 0;
+}
+
+#cart_container .info_block{
+	padding-left: 30px;
+}
+
+#cart_container input.item_count{
+	padding: 5px 5px 5px 8px;
+	width: 35px;
+	height: 27px;
+}
+
+#cart_container label{
+	font-weight: normal;
+}
+
+#cart_container form{
+	margin-bottom: 5px;
 }

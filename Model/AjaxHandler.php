@@ -27,6 +27,12 @@ class AjaxHandler
 				case 'exit':
 					$this->logout();
 					break;
+				case 'change_item_count_form':
+					$this->change_item_count_form();
+					break;
+				case 'drop_cart':
+					$this->drop_from_cart();
+					break;
 				default:
 					echo "No such action";
 					break;
@@ -41,28 +47,49 @@ class AjaxHandler
 		$id_book = mysqli_real_escape_string( $this->db_link, \Model\Functions::clearData($_GET['id_book']) );
 		if ( $id_book ) {
 			$book = \Model\MySQLi_Query::select($this->db_link, 
-										'SELECT title, author, cover, pages, price, category FROM books WHERE id_book = '.$id_book.'',
+										'SELECT title, author, cover, pages, price, category FROM books WHERE id_book = \''.$id_book.'\'',
 										'assoc');
-			$book_to_ins = [
-				'id_book' => $id_book,
-				'title' => $book[0]['title'],
-				'author' => $book[0]['author'],
-				'cover' => $book[0]['cover'],
-				'pages' => $book[0]['pages'],
-				'price' => $book[0]['price'],
-				'category' => $book[0]['category'],
-				'sid' => SID
-			];
 
-			$result = \Model\MySQLi_Query::insert($this->db_link, 'cart', $book_to_ins);
-			if ( $result != -1 )
-				$this->output['success'] = true;
-			else
-				$this->output['success'] = false;
+			$cart_item = \Model\MySQLi_Query::select($this->db_link,
+											'SELECT count FROM cart WHERE id_book = \''.$id_book.'\' AND sid = \''.SID.'\'',
+											'assoc');
 
-			//Получаем кол-во книг из базы, для смены в шапке возле корзины
-			$cart_count = \Model\MySQLi_Query::select($this->db_link, 'SELECT COUNT(*) FROM cart WHERE sid = \''.SID.'\'', 'array');
-			$this->output['cart_count'] = $cart_count[0][0];
+			if( empty($cart_item) ) {
+				$book_to_ins = [
+					'id_book' => $id_book,
+					'title' => $book[0]['title'],
+					'author' => $book[0]['author'],
+					'cover' => $book[0]['cover'],
+					'pages' => $book[0]['pages'],
+					'price' => $book[0]['price'],
+					'category' => $book[0]['category'],
+					'sid' => SID,
+					'count' => 1
+				];
+
+				$result = \Model\MySQLi_Query::insert($this->db_link, 'cart', $book_to_ins);
+				if ( $result != -1 )
+					$this->output['success'] = true;
+				else
+					$this->output['success'] = false;
+			} else {
+				$count = $cart_item[0]['count'] + 1;
+				$item['count'] = $count;
+				$t = "id_book = '%s' AND sid = '%s'";
+				$where = sprintf($t, mysqli_real_escape_string($this->db_link, $id_book), mysqli_real_escape_string($this->db_link, SID));
+				$result = \Model\MySQLi_Query::update($this->db_link, 'cart', $item, $where);
+
+				if ( $result != -1 )
+					$this->output['success'] = true;
+				else 
+					$this->output['success'] = false;
+			}
+
+			if( $this->output['success'] = true ) {
+				//Получаем кол-во книг из базы, для смены в шапке возле корзины
+				$cart_count = \Model\MySQLi_Query::select($this->db_link, 'SELECT SUM(count) FROM cart WHERE sid = \''.SID.'\'', 'array');
+				$this->output['cart_count'] = $cart_count[0][0];
+			}
 		}
 		else {
 			$this->output['success'] = false;
@@ -91,6 +118,7 @@ class AjaxHandler
 				$this->output['success'] = false;		
 			}
 			if ( !isset( $this->output['success'] ) ) {
+				$email = mysqli_real_escape_string( $this->db_link, $email );
 				$user_count = \Model\MySQLi_Query::select($this->db_link, 
 					'SELECT COUNT(*) FROM customers WHERE email = \''.$email.'\'', 'array');
 					if ( $user_count[0][0] == 0) {
@@ -137,6 +165,8 @@ class AjaxHandler
 		$pass = \Model\Functions::clearData($_POST['password']);
 
 		if( !empty($email) && !empty($pass) && filter_var($email, FILTER_VALIDATE_EMAIL) ) {
+			$email = mysqli_real_escape_string( $this->db_link, $email );
+			$pass = mysqli_real_escape_string( $this->db_link, $pass );
 			$email_bd = \Model\MySQLi_Query::select($this->db_link, 'SELECT email FROM customers WHERE email = \''.$email.'\'', 'assoc');
 			$pass_bd = \Model\MySQLi_Query::select($this->db_link, 'SELECT pass FROM customers	 WHERE email = \''.$email.'\'', 'assoc');
 			
@@ -168,12 +198,85 @@ class AjaxHandler
 		echo json_encode($this->output);
 	}
 
-	function logout()
+	private function logout()
 	{
 		$customer = \Model\Customer::Instance($this->db_link);
 		$customer->deleteSession();
 		$this->output['success'] = true;
 		$this->output['msg'] = SITE_URL;
+
+		echo json_encode($this->output);
+	}
+
+	private function change_item_count_form()
+	{
+		$id_book = \Model\Functions::clearData($_POST['id'], 'i');
+		$value = \Model\Functions::clearData($_POST['value'], 'i');
+
+		if(!empty($id_book) && !empty($value) && $value > 0) {
+			$count_of = \Model\MySQLi_Query::select($this->db_link, 'SELECT count_of FROM books WHERE id_book = \''.$id_book.'\'', 'assoc');
+			$count_of = $count_of[0]['count_of'];
+			if ($count_of > $value) {
+				$item['count'] = $value;
+				$t = "id_book = '%s' AND sid = '%s'";
+				$where = sprintf($t, mysqli_real_escape_string($this->db_link, $id_book), mysqli_real_escape_string($this->db_link, SID));
+				$result = \Model\MySQLi_Query::update($this->db_link, 'cart', $item, $where);
+
+				if ( $result != -1 ) {
+					//get count of items in cart and price of all items to return and change on the site in ajax callback
+					$cart_count = \Model\MySQLi_Query::select($this->db_link, 'SELECT SUM(count) FROM cart WHERE sid = \''.SID.'\'', 'array');
+					$price_count = \Model\MySQLi_Query::select($this->db_link, 'SELECT price, count FROM cart WHERE sid = \''.SID.'\'', 'assoc');
+					$items_summ = 0;
+					foreach ($price_count as $key) {
+						$items_summ += $key['price'] * $key['count']; 
+					}
+					$this->output['success'] = true;
+					$this->output['items_summ'] = $items_summ;
+					$this->output['cart_count'] = $cart_count[0][0];
+				}
+				else {
+					$this->output['success'] = false;
+					$this->output['err'] = 'При изменении произошла ошибка. Попробуйте позже';
+				}
+			}
+			else {
+				$this->output['success'] = false;
+				$this->output['err'] = 'Количество книг на складе: ' . $count_of;
+			}
+		}
+		else {
+			$this->output['success'] = false;
+			$this->output['err'] = 'Переданное значение некорректно.';
+		}
+
+		echo json_encode($this->output);
+	}
+
+	private function drop_from_cart()
+	{
+		$id_book = mysqli_real_escape_string( $this->db_link, \Model\Functions::clearData($_GET['id_book']) );
+
+		if ( $id_book ) {
+			$t = "id_book = '%s' AND sid = '%s'";
+			$where = sprintf($t, mysqli_real_escape_string($this->db_link, $id_book), mysqli_real_escape_string($this->db_link, SID));
+			$result = \Model\MySQLi_Query::delete($this->db_link, 'cart', $where);
+
+			if ( $result != -1 ) {
+				//get count of items in cart and price of all items to return and change on the site in ajax callback
+				$cart_count = \Model\MySQLi_Query::select($this->db_link, 'SELECT SUM(count) FROM cart WHERE sid = \''.SID.'\'', 'array');
+				$price_count = \Model\MySQLi_Query::select($this->db_link, 'SELECT price, count FROM cart WHERE sid = \''.SID.'\'', 'assoc');
+				$items_summ = 0;
+				foreach ($price_count as $key) {
+					$items_summ += $key['price'] * $key['count']; 
+				}
+				$this->output['success'] = true;
+				$this->output['id_book'] = $id_book;
+				$this->output['items_summ'] = $items_summ;
+				$this->output['cart_count'] = $cart_count[0][0];
+			} else {
+				$this->output['success'] = false;
+			}
+		}
 
 		echo json_encode($this->output);
 	}
