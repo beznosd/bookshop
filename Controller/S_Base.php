@@ -22,7 +22,7 @@ class S_Base extends S_Controller
 		$this->db_link = \Model\DB_Connection::$link;
 
 		//define customer and permissions
-		$this->customer = \Model\Customer::Instance($this->db_link)->getCustomer();
+		$this->customer = \Model\Customer::Instance($this->db_link)->getCustomer()[0];
 		//get the cart_count
 		$this->cart_count = \Model\MySQLi_Query::select($this->db_link, 'SELECT SUM(count) FROM cart WHERE sid = \''.SID.'\'', 'array');
 
@@ -38,7 +38,7 @@ class S_Base extends S_Controller
 	{
 		$page = $this->Template('View/layouts/main_layout.php', ['content' => $this->content, 
 																'cart_count' => $this->cart_count[0][0],
-																'customer' => $this->customer[0]
+																'customer' => $this->customer
 																]);
 		echo $page;
 	}

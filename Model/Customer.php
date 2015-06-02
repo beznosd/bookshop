@@ -87,4 +87,16 @@ class Customer
 		}
 		return false;
 	}
+
+	/* functions called in profile page */
+
+	public static function profile_change_data()
+	{
+
+	}
+
+	public static function profile_change_pass()
+	{
+		
+	}
 }

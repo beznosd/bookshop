@@ -23,7 +23,7 @@
 				<button class="btn btn-success btn-sm" data-toggle="modal" data-target="#modal-auth">Вход</button>
 				<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-reg">Регистрация</button>
 				<?php else: ?>
-					<a class="btn btn-success btn-sm"><i class="glyphicon glyphicon-user"></i>&nbsp;&nbsp;&nbsp;<?=$customer['name'] . ' ' . $customer['surname']?></a>
+					<a href="<?='http://localhost/bookshop/?r=site/profile'?>" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-user"></i>&nbsp;&nbsp;&nbsp;<?=$customer['name'] . ' ' . $customer['surname']?></a>
 					<a href="<?=SITE_URL.'&action=exit'?>" class="btn btn-primary btn-sm ajax_link">Выйти</a>
 				<?php endif; ?>
 				<a href="http://localhost/bookshop/?r=site/cart" class="pull-right" id="top_cart_num" href="#">
@@ -35,16 +35,6 @@
 		</div>
 	</header>
 	<div id="main" class="container">
-		<!-- <div class="col-lg-3">
-			<nav>
-				<ul>
-					<?php $cat_count = count($categories); ?>
-					<?php for ($i = 0; $i < $cat_count; $i++): ?>
-						<li><a href="#"><?=$categories[$i]['category']?></a></li>
-					<?php endfor; ?>
-				</ul>
-			</nav>
-		</div> -->
 
 		<?=$content ?>
 

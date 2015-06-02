@@ -100,3 +100,9 @@ a#top_cart_num:hover{
 #book_container .row{
 	margin-bottom: 20px;
 }
+
+/* Profile user page */
+
+.list-group .glyphicon{
+	margin-right: 10px;
+}
