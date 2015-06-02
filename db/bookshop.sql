@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: localhost
--- Время создания: Май 25 2015 г., 19:09
+-- Время создания: Июн 02 2015 г., 15:28
 -- Версия сервера: 10.0.17-MariaDB
 -- Версия PHP: 5.6.8
 
@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS `books` (
   `title` varchar(100) NOT NULL,
   `author` varchar(150) NOT NULL,
   `cover` varchar(150) NOT NULL,
+  `desc` varchar(2000) NOT NULL,
   `pages` int(4) NOT NULL,
   `price` int(11) NOT NULL,
   `category` varchar(30) NOT NULL,
@@ -42,9 +43,9 @@ CREATE TABLE IF NOT EXISTS `books` (
 -- Дамп данных таблицы `books`
 --
 
-INSERT INTO `books` (`id_book`, `title`, `author`, `cover`, `pages`, `price`, `category`, `count_of`, `id_supply`) VALUES
-(1, 'Android 2. Программирование приложений для планшетных компьютеров и смартфонов', 'Рето Майер', '1.jpg', 672, 300, 'Android', 20, 1),
-(2, 'Android для программистов. Создаем приложения', 'Дейтел П., Дейтел Х., Дейтел Э., Моргано М.', '2.jpg', 560, 350, 'Android', 15, 1);
+INSERT INTO `books` (`id_book`, `title`, `author`, `cover`, `desc`, `pages`, `price`, `category`, `count_of`, `id_supply`) VALUES
+(1, 'Android 2. Программирование приложений для планшетных компьютеров и смартфонов', 'Рето Майер', '1.jpg', '', 672, 300, 'Android', 20, 1),
+(2, 'Android для программистов. Создаем приложения', 'Дейтел П., Дейтел Х., Дейтел Э., Моргано М.', '2.jpg', 'Приложения Android Market (в настоящее время Google Play) скачаны уже более миллиарда раз! Эта книга даст вам всё, что нужно, для начала разработки приложений для Android и быстрой публикации их на Android Market. Авторы используют приложение-ориентированный подход, при котором описание каждой технологии рассматривается на примере 16 полностью протестированных приложений для Android. Кроме описания процесса создания приложений, в книге дано пошаговое руководство по размещению ваших приложений на Android Market и примеры успешных публикаций.', 560, 350, 'Android', 15, 1);
 
 -- --------------------------------------------------------
 
@@ -59,6 +60,25 @@ CREATE TABLE IF NOT EXISTS `book_order` (
   `count` int(11) NOT NULL,
   `summ` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `cart`
+--
+
+CREATE TABLE IF NOT EXISTS `cart` (
+  `id_object` int(11) NOT NULL,
+  `id_book` int(11) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `author` varchar(150) NOT NULL,
+  `cover` varchar(150) NOT NULL,
+  `pages` int(4) NOT NULL,
+  `price` int(11) NOT NULL,
+  `category` varchar(30) NOT NULL,
+  `sid` char(128) NOT NULL,
+  `count` int(11) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -86,9 +106,17 @@ CREATE TABLE IF NOT EXISTS `customers` (
   `email` varchar(70) NOT NULL,
   `address` varchar(150) NOT NULL,
   `phone` varchar(30) NOT NULL,
-  `login` varchar(20) NOT NULL,
-  `pass` varchar(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `pass` char(32) NOT NULL,
+  `admin` int(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `customers`
+--
+
+INSERT INTO `customers` (`id_customer`, `name`, `surname`, `email`, `address`, `phone`, `pass`, `admin`) VALUES
+(1, 'Дима', 'Безнос', 'beznos.d@gmail.com', '', '', 'c825b89f80009516f2f8f8184a791b21', 1),
+(2, 'Vasya', 'Pupkin', 'vasya.p@gmail.com', '', '', '2b4565c03d6bc454d69f8da91f5791e5', 0);
 
 -- --------------------------------------------------------
 
@@ -136,6 +164,28 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `delivery_type` varchar(20) NOT NULL,
   `order_summ` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `sessions`
+--
+
+CREATE TABLE IF NOT EXISTS `sessions` (
+  `id_session` int(11) NOT NULL,
+  `id_customer` int(11) NOT NULL,
+  `sid` varchar(30) NOT NULL,
+  `time_start` int(11) NOT NULL,
+  `time_finish` int(11) NOT NULL,
+  `admin` int(11) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `sessions`
+--
+
+INSERT INTO `sessions` (`id_session`, `id_customer`, `sid`, `time_start`, `time_finish`, `admin`) VALUES
+(22, 1, 'sg0raehjtiijh2imkhnqndbf17', 1433258255, 1433259494, 0);
 
 -- --------------------------------------------------------
 
@@ -193,6 +243,12 @@ ALTER TABLE `book_order`
   ADD PRIMARY KEY (`id_book_order`);
 
 --
+-- Индексы таблицы `cart`
+--
+ALTER TABLE `cart`
+  ADD PRIMARY KEY (`id_object`);
+
+--
 -- Индексы таблицы `couriers`
 --
 ALTER TABLE `couriers`
@@ -223,6 +279,12 @@ ALTER TABLE `orders`
   ADD PRIMARY KEY (`id_order`);
 
 --
+-- Индексы таблицы `sessions`
+--
+ALTER TABLE `sessions`
+  ADD PRIMARY KEY (`id_session`);
+
+--
 -- Индексы таблицы `supplies`
 --
 ALTER TABLE `supplies`
@@ -249,6 +311,11 @@ ALTER TABLE `books`
 ALTER TABLE `book_order`
   MODIFY `id_book_order` int(11) NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT для таблицы `cart`
+--
+ALTER TABLE `cart`
+  MODIFY `id_object` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=15;
+--
 -- AUTO_INCREMENT для таблицы `couriers`
 --
 ALTER TABLE `couriers`
@@ -257,7 +324,7 @@ ALTER TABLE `couriers`
 -- AUTO_INCREMENT для таблицы `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `id_customer` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_customer` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT для таблицы `delivery`
 --
@@ -273,6 +340,11 @@ ALTER TABLE `managers`
 --
 ALTER TABLE `orders`
   MODIFY `id_order` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT для таблицы `sessions`
+--
+ALTER TABLE `sessions`
+  MODIFY `id_session` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=23;
 --
 -- AUTO_INCREMENT для таблицы `supplies`
 --

@@ -84,3 +84,19 @@ a#top_cart_num:hover{
 #cart_container form{
 	margin-bottom: 5px;
 }
+
+/* Single page for one book */
+
+#book_container .col-lg-3{
+	margin-right: -40px;
+}
+
+#book_container h1{
+	margin-top: 0;
+	margin-bottom: 30px;
+	line-height: 0;
+}
+
+#book_container .row{
+	margin-bottom: 20px;
+}
