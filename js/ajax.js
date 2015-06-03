@@ -172,4 +172,34 @@ $(document).ready(function(){
 			alert('Передданное значение некорректно');
 		}
 	});
+
+	/*
+	* Ajax for making order
+	*/
+
+	$('#make_order').click(function(){
+		$(this).html('<i class="glyphicon glyphicon-refresh fa-spin"></i>&nbsp;&nbsp;Загрузка')
+		$.ajax({
+			method: 'GET',
+			url: 'http://localhost/bookshop/?r=site/order&action=make_order',
+			success: function(data){
+				data = $.parseJSON(data);
+				/*alert(data);*/
+				if ( data.success ) {
+					$('#cart_count_top').text('');
+					$('#cart_count_side').text('0');
+					$('#cart_summ_side').text('0');
+
+					$('#order_container h3').text('Заказ успешно оформлен');
+					$('#order_info').html('<p>Наши сотрудники свжуться с вами в течении суток.</p><p>Детали и состояние заказа вы может посмотреть в своем <a href="http://localhost/bookshop/?r=site/profile">профиле</a></p>');
+				}
+				else {
+					alert(data.err);
+				}
+			},
+			error: function(){
+				alert('Lost connection with the server!');
+			}
+		});
+	});
 });

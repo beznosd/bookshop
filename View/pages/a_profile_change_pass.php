@@ -3,8 +3,13 @@
 		<a href="http://localhost/bookshop/?r=site/profile" class="list-group-item">
 		    <i class="glyphicon glyphicon-user"></i>Мои данные
 		</a>
+		<!-- Тут админ связывается с клиентом и подтверждает либо отменяет заказ -->
+		<a href="http://localhost/bookshop/?r=site/profile&menu_point=new_orders" class="list-group-item">
+		  	<i class="glyphicon glyphicon-download"></i>Новые заказы
+		</a>
+		<!-- Тут заказ доставляется и т.д-->
 		<a href="http://localhost/bookshop/?r=site/profile&menu_point=cur_orders" class="list-group-item">
-		  	<i class="glyphicon glyphicon-list-alt"></i>Текущие заказы
+			<i class="glyphicon glyphicon-cog"></i>Заказы в обработке
 		</a>
 		<a href="http://localhost/bookshop/?r=site/profile&menu_point=old_orders" class="list-group-item">
 			<i class="glyphicon glyphicon-ok"></i>История заказов

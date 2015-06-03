@@ -34,11 +34,13 @@
 			</div>
 		</div>
 	</header>
+	
 	<div id="main" class="container">
 
 		<?=$content ?>
 
 	</div>
+
 	<footer class="footer">
 		<div class="container">
 			<p class="text-muted">Place sticky footer content here.</p>

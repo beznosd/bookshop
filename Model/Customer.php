@@ -90,13 +90,63 @@ class Customer
 
 	/* functions called in profile page */
 
-	public static function profile_change_data()
+	public static function profile_change_data($id_customer)
 	{
-
+		$name = \Model\Functions::clearData($_POST['name']);
+		$surname = \Model\Functions::clearData($_POST['surname']);
+		$email = \Model\Functions::clearData($_POST['email']);
+		$address = \Model\Functions::clearData($_POST['address']);
+		$phone = \Model\Functions::clearData($_POST['phone']);
+		if ( !empty($name) && !empty($surname) && !empty($email) ) {
+			$object = [
+				'name' => $name,
+				'surname' => $surname,
+				'email' => $email,
+				'address' => $address,
+				'phone' => $phone
+			];
+			$t = "id_customer = '%s'";
+			$where = sprintf( $t, mysqli_real_escape_string(\Model\DB_Connection::$link, $id_customer) );
+			$result = \Model\MySQLi_Query::update(\Model\DB_Connection::$link, 'customers', $object, $where);
+			if ( $result != -1 )
+				$msg = 'success';
+			else 
+				$msg = 'Не удалось, попробуйте еще раз';
+		} else {
+			$msg = "Имя, фамилия и email должны быть обязательно заполнены";
+		}
+		return $msg;
 	}
 
-	public static function profile_change_pass()
+	public static function profile_change_pass($id_customer)
 	{
-		
+		$old_pass = \Model\Functions::clearData($_POST['old_pass']);
+		$new_pass1 = \Model\Functions::clearData($_POST['new_pass1']);
+		$new_pass2 = \Model\Functions::clearData($_POST['new_pass2']);
+		if ( !empty($old_pass) && !empty($new_pass1) && !empty($new_pass2) ) {
+			$pass_bd = \Model\MySQLi_Query::select(\Model\DB_Connection::$link, 'SELECT pass FROM customers	 WHERE id_customer = \''.$id_customer.'\'', 'assoc');
+			$old_pass = md5(md5($old_pass).'22');
+			if ( ($old_pass === $pass_bd[0]['pass']) ) {
+				if ($new_pass1 === $new_pass2) {
+					$object['pass'] = md5(md5($new_pass1).'22');
+					$t = "id_customer = '%s'";
+					$where = sprintf( $t, mysqli_real_escape_string(\Model\DB_Connection::$link, $id_customer) );
+					$result = \Model\MySQLi_Query::update(\Model\DB_Connection::$link, 'customers', $object, $where);
+					if ( $result != -1 )
+						$msg = 'success';
+					else 
+						$msg = 'Не удалось, попробуйте еще раз';
+				}
+				else {
+					$msg = "Новые пароли не совпадают";	
+				}
+			} else {
+				$msg = "Неправильно введен старый пароль";	
+			}
+		}
+		else {
+			$msg = "Заполните пожалуйста все поля";
+		}
+		return $msg;
 	}
 }

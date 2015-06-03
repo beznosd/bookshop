@@ -1,13 +1,12 @@
-a:active, a:focus{
-    outline: none !important;
+/* Делаем footer */
+html{
+	height: 100%;
 }
 
-.btn:focus, .btn:active:focus, .btn.active:focus, .btn.focus, .btn.focus:active, .btn.active.focus {
-    outline: none !important;
-}
-
-#main{
-	margin-top: 80px;
+body {
+	/*height: 100%;*/
+	min-height: 100%;
+	position: relative; 
 }
 
 .footer{
@@ -17,6 +16,24 @@ a:active, a:focus{
 	height: 60px;
 	background-color: #f5f5f5;
 }
+
+/*еще для блока с контентом #main делаем padding-bottom: 60px*/
+
+/*!!! футер*/
+
+a:active, a:focus{
+    outline: none !important;
+}
+
+.btn:focus, .btn:active:focus, .btn.active:focus, .btn.focus, .btn.focus:active, .btn.active.focus {
+    outline: none !important;
+}
+
+#main{
+	padding-bottom: 85px;
+	margin-top: 80px;
+}
+
 
 .container .text-muted{
 	margin: 20px 0;
@@ -105,4 +122,29 @@ a#top_cart_num:hover{
 
 .list-group .glyphicon{
 	margin-right: 10px;
+}
+
+.alert-visible{
+	display: block;
+}
+
+.order_info_block h5{
+	font-size: 17px;
+}
+
+.order_info_block .label-warning{
+	font-size: 13px;
+}
+
+/* Order */
+#order_container .row {
+	margin-bottom: 20px;
+}
+
+#order_container .page-header, #order_container .page-header h3{
+	margin-top: 0;
+}
+
+#order_container h5 {
+	font-size: 17px;
 }

@@ -14,6 +14,8 @@ class S_Base extends S_Controller
 	//for main template
 	public $cart_count;
 	public $customer;
+	public $base_template = 'View/layouts/main_layout.php';
+	public $admin = false;
 
 	public function onInput()
 	{
@@ -23,6 +25,10 @@ class S_Base extends S_Controller
 
 		//define customer and permissions
 		$this->customer = \Model\Customer::Instance($this->db_link)->getCustomer()[0];
+		if ($this->customer['admin'] == 1) {
+			$this->base_template = 'View/layouts/admin_layout.php';
+			$this->admin = true;
+		}
 		//get the cart_count
 		$this->cart_count = \Model\MySQLi_Query::select($this->db_link, 'SELECT SUM(count) FROM cart WHERE sid = \''.SID.'\'', 'array');
 
@@ -36,7 +42,7 @@ class S_Base extends S_Controller
 
 	public function onOutput()
 	{
-		$page = $this->Template('View/layouts/main_layout.php', ['content' => $this->content, 
+		$page = $this->Template($this->base_template, ['content' => $this->content, 
 																'cart_count' => $this->cart_count[0][0],
 																'customer' => $this->customer
 																]);

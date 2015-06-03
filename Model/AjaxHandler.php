@@ -33,6 +33,9 @@ class AjaxHandler
 				case 'drop_cart':
 					$this->drop_from_cart();
 					break;
+				case 'make_order':
+					$this->make_order();
+					break;
 				default:
 					echo "No such action";
 					break;
@@ -276,6 +279,73 @@ class AjaxHandler
 			} else {
 				$this->output['success'] = false;
 			}
+		}
+
+		echo json_encode($this->output);
+	}
+
+	private function make_order()
+	{
+		$customer = \Model\Customer::Instance($this->db_link)->getCustomer()[0];
+
+		$cart_items = \Model\MySQLi_Query::select($this->db_link,
+											'SELECT id_book, title, author, cover, pages, price, category, count 
+											FROM cart WHERE sid = \''.SID.'\'',
+											'assoc');
+		$order_summ = 0;
+		foreach ($cart_items as $key) {
+			$order_summ += $key['price'] * $key['count']; 
+		}
+		$date = time();
+		$order = [
+					'id_customer' => $customer['id_customer'],
+					'date' => $date,
+					'state' => 0,
+					'order_summ' => $order_summ
+				];
+
+		$result = \Model\MySQLi_Query::insert($this->db_link, 'orders', $order);
+
+		if ( $result != -1 ) {
+			$id_order = \Model\MySQLi_Query::select($this->db_link,
+												'SELECT id_order FROM orders WHERE 
+												id_customer = \''.$customer['id_customer'].'\' AND date = \''.$date.'\' AND order_summ = \''.$order_summ.'\'',
+												'assoc');
+
+			$result_arr = [];
+			foreach ($cart_items as $key) {
+				$summ = $key['count'] * $key['price'];
+				$book_order = [
+						'id_book' => $key['id_book'],
+						'id_order' => $id_order[0]['id_order'],
+						'count' => $key['count'],
+						'summ' => $summ
+					];
+				$result_arr[] = \Model\MySQLi_Query::insert($this->db_link, 'book_order', $book_order);
+			}
+
+			foreach ($result_arr as $key) {
+				if ($key == -1) {
+					$this->output['success'] = false;
+					break;
+				}
+			}
+
+			if( !isset($this->output['success']) ) {
+				$t = "sid = '%s'";
+				$where = sprintf($t, mysqli_real_escape_string($this->db_link, SID));
+				$res = \Model\MySQLi_Query::delete($this->db_link, 'cart', $where);
+				if ( $res != -1 ) {
+					$this->output['success'] = true;
+				} else {
+					$this->output['success'] = false;
+				}
+			}
+
+
+		}
+		else {
+			$this->output['success'] = false;
 		}
 
 		echo json_encode($this->output);

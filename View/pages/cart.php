@@ -8,12 +8,12 @@
 	<?php for ($i = 0; $i < $items_count; $i++): ?>
 		<div id="<?=$items[$i]['id_book']?>_book_row" class="row">
 			<div class="col-lg-2">
-				<a href="#">
+				<a href="http://localhost/bookshop/?r=site/single&id_book=<?=$items[$i]['id_book']?>">
 					<img src="images/books/<?=$items[$i]['cover']?>" />
 				</a>
 			</div>
 			<div class="col-lg-10 info_block">
-				<a href="#"><h4><?=$items[$i]['title']?></h4></a>
+				<a href="http://localhost/bookshop/?r=site/single&id_book=<?=$items[$i]['id_book']?>"><h4><?=$items[$i]['title']?></h4></a>
 				<p>Автор(а): <b><?=$items[$i]['author']?></b></p>
 				<p>Количество страниц: <b><?=$items[$i]['pages']?></b></p>
 				<p>Цена: <b><?=$items[$i]['price']?></b> грн.</p>
@@ -33,5 +33,5 @@
 	<h4>На данный момент</h4>
 	<p>В корзине: <b id="cart_count_side"><?=$all_items_count?></b> книг</p>
 	<p>На сумму: <b id="cart_summ_side"><?=$items_summ?></b> грн.</p>
-	<p><a href="#" class="btn btn-warning btn-block">Оформить заказ</a></p>
+	<p><a href="http://localhost/bookshop/?r=site/order" class="btn btn-warning btn-block">Оформить заказ</a></p>
 </div>
