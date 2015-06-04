@@ -43,6 +43,14 @@ a:active, a:focus{
 	margin-bottom: 25px;
 }
 
+.book_name{
+	height: 40px;
+}
+
+#books_container .col-lg-3{
+	margin-bottom: 20px;
+}
+
 /*Header*/
 
 div.navbar-right{

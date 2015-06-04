@@ -43,7 +43,8 @@
 
 	<footer class="footer">
 		<div class="container">
-			<p class="text-muted">Place sticky footer content here.</p>
+			<p class="text-muted pull-left">&copy; Книжный магазин.</p>
+			<p class="text-muted pull-right">Телефон для справок: +38(061)212-32-42</p>
 		</div>
 	</footer>
 

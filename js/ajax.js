@@ -33,6 +33,23 @@ $(document).ready(function(){
 								$('#cart_count_side').text(data.cart_count);
 								$('#cart_summ_side').text(data.items_summ);
 								break;
+							case 'submit_order':
+								if ( data.new_orders_count )
+									$('.badge').text(data.new_orders_count);
+								else
+									$('.badge').fadeOut(500);
+								$('#a_profile_new_order_bloc_' + data.id_order).fadeOut(500);
+								break;
+							case 'delete_order':
+								if ( data.new_orders_count )
+									$('.badge').text(data.new_orders_count);
+								else
+									$('.badge').fadeOut(500);
+								$('#a_profile_new_order_bloc_' + data.id_order).fadeOut(500);
+								break;
+							case 'go_history_order':
+								$('#a_profile_cur_order_bloc_' + data.id_order).fadeOut(500);
+								break;
 						}
 					}
 					else {

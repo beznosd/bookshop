@@ -20,7 +20,17 @@
 <div class="col-lg-9 order_info_block">
 	<?php $c_orders = count($orders_info); $c_orders_book = count($orders_book_info); ?>
 	<?php for ($i = 0; $i < $c_orders; $i++): ?>
-		<p>Номер заказа: <b>#<?=$orders_info[$i]['id_order']?></b> <span class="label label-warning">В обработке</span></p>
+		<?php if($orders_info[$i]['state'] == 0 || $orders_info[$i]['state'] == 1): ?>
+		<p>
+			Номер заказа: <b>#<?=$orders_info[$i]['id_order']?></b> 
+			<span class="label label-warning">
+				<?php if($orders_info[$i]['state'] == 0): ?>
+					Ожидает подтверждения
+				<?php elseif($orders_info[$i]['state'] == 1): ?>
+					В обработке
+				<?php endif; ?>
+			</span>
+		</p>
 		<p>Дата оформления: <b><?=@date('d.m.Y H:i:s', $orders_info[$i]['date'] + 60 * 60 * 3)?></b></p>
 		<p>Книги: </p>
 		<?php for ($j = 0; $j < $c_orders_book; $j++): ?>
@@ -31,5 +41,9 @@
 		<?php endfor; ?>
 		<p>Сумма заказа: <b><?=$orders_info[$i]['order_summ']?></b></p>
 		<hr/>
+	<?php endif; ?>
 	<?php endfor; ?>
+	<?php if($c_orders == 0): ?>
+		На данный момент нет текущих заказов.
+	<?php endif; ?>
 </div>

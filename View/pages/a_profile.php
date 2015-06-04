@@ -6,6 +6,11 @@
 		<!-- Тут админ связывается с клиентом и подтверждает либо отменяет заказ -->
 		<a href="http://localhost/bookshop/?r=site/profile&menu_point=new_orders" class="list-group-item">
 		  	<i class="glyphicon glyphicon-download"></i>Новые заказы
+		  	<?php if($new_orders_count != 0): ?>
+			  	<span class="badge">
+			  		<?=$new_orders_count?>
+			  	</span>
+		  	<?php endif; ?>
 		</a>
 		<!-- Тут заказ доставляется и т.д-->
 		<a href="http://localhost/bookshop/?r=site/profile&menu_point=cur_orders" class="list-group-item">

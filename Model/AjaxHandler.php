@@ -36,6 +36,15 @@ class AjaxHandler
 				case 'make_order':
 					$this->make_order();
 					break;
+				case 'submit_order':
+					$this->submit_order();
+					break;
+				case 'delete_order':
+					$this->delete_order();
+					break;
+				case 'go_history_order':
+					$this->go_history_order();
+					break;
 				default:
 					echo "No such action";
 					break;
@@ -346,6 +355,97 @@ class AjaxHandler
 		}
 		else {
 			$this->output['success'] = false;
+		}
+
+		echo json_encode($this->output);
+	}
+
+	private function submit_order()
+	{
+		if ( isset($_GET['id_order']) ) {
+			$id_order = mysqli_real_escape_string( $this->db_link, \Model\Functions::clearData($_GET['id_order']) );
+			if( !empty($id_order) ) {
+				$order['state'] = 1;
+				$t = "id_order = '%s'";
+				$where = sprintf($t, mysqli_real_escape_string($this->db_link, $id_order));
+				$result = \Model\MySQLi_Query::update($this->db_link, 'orders', $order, $where);
+				if ( $result != -1) {
+					$new_orders_count = \Model\MySQLi_Query::select($this->db_link, 
+								'SELECT COUNT(*) FROM orders WHERE state = \'0\'');
+					if($new_orders_count[0][0] != 0)
+						$this->output['new_orders_count'] = $new_orders_count[0][0];
+					$this->output['id_order'] = $id_order;
+					$this->output['success'] = true;
+				} else {
+					$this->output['success'] = false;
+					$this->output['msg'] = 'Failed work with database';
+				}
+			} else {
+				$this->output['success'] = false;
+				$this->output['msg'] = 'Invalid order id to submit';
+			}
+		} else {
+			$this->output['success'] = false;
+			$this->output['msg'] = 'No orders to submit';
+		}
+
+		echo json_encode($this->output);
+	}
+
+	private function delete_order()
+	{
+		if ( isset($_GET['id_order']) ) {
+			$id_order = mysqli_real_escape_string( $this->db_link, \Model\Functions::clearData($_GET['id_order']) );
+			if( !empty($id_order) ) {
+				$t = "id_order = '%s'";
+				$where = sprintf($t, mysqli_real_escape_string($this->db_link, $id_order));
+				$result = \Model\MySQLi_Query::delete($this->db_link, 'orders', $where);
+				if ( $result != -1) {
+					$new_orders_count = \Model\MySQLi_Query::select($this->db_link, 
+								'SELECT COUNT(*) FROM orders WHERE state = \'0\'');
+					if($new_orders_count[0][0] != 0)
+						$this->output['new_orders_count'] = $new_orders_count[0][0];
+					$this->output['id_order'] = $id_order;
+					$this->output['success'] = true;
+				} else {
+					$this->output['success'] = false;
+					$this->output['msg'] = 'Failed work with database';
+				}
+			} else {
+				$this->output['success'] = false;
+				$this->output['msg'] = 'Invalid order id to delete';
+			}
+		} else {
+			$this->output['success'] = false;
+			$this->output['msg'] = 'No orders to delete';
+		}
+
+		echo json_encode($this->output);
+	}
+
+	private function go_history_order()
+	{
+		if ( isset($_GET['id_order']) ) {
+			$id_order = mysqli_real_escape_string( $this->db_link, \Model\Functions::clearData($_GET['id_order']) );
+			if( !empty($id_order) ) {
+				$order['state'] = 2;
+				$t = "id_order = '%s'";
+				$where = sprintf($t, mysqli_real_escape_string($this->db_link, $id_order));
+				$result = \Model\MySQLi_Query::update($this->db_link, 'orders', $order, $where);
+				if ( $result != -1) {
+					$this->output['id_order'] = $id_order;
+					$this->output['success'] = true;
+				} else {
+					$this->output['success'] = false;
+					$this->output['msg'] = 'Failed work with database';
+				}
+			} else {
+				$this->output['success'] = false;
+				$this->output['msg'] = 'Invalid order id to submit';
+			}
+		} else {
+			$this->output['success'] = false;
+			$this->output['msg'] = 'No orders to submit';
 		}
 
 		echo json_encode($this->output);
