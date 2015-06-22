@@ -208,7 +208,7 @@ $(document).ready(function(){
 					$('#cart_summ_side').text('0');
 
 					$('#order_container h3').text('Заказ успешно оформлен');
-					$('#order_info').html('<p>Наши сотрудники свжуться с вами в течении суток.</p><p>Детали и состояние заказа вы может посмотреть в своем <a href="http://localhost/bookshop/?r=site/profile">профиле</a></p>');
+					$('#order_info').html('<p>Наши сотрудники свяжутся с вами в течении суток.</p><p>Детали и состояние заказа вы можете посмотреть в своем <a href="http://localhost/bookshop/?r=site/profile">профиле</a>.</p>');
 				}
 				else {
 					alert(data.err);

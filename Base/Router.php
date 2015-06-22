@@ -15,7 +15,7 @@ class Router
                 throw new \Exception("Error 404. Sorry. This page doees not exists.");
         }
         else{
-            header("Location:".SITE_URL."?r=site/index");
+            header("Location:".SITE_URL_DYNAMIC."?r=site/index");
             die();
         }
     }
